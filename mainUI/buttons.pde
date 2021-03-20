@@ -35,5 +35,4 @@ public void Ping() {
 public void SetNFS() {
   String setNFS = dataPath("") + "/linux_scripts/setNFS.sh";
   exec(setNFS);
-  delay(5000);
 }
