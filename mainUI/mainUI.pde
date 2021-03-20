@@ -4,20 +4,21 @@ import controlP5.*;
 String[] raspberryIp;
 // load text file
 String[] raspberryPing;
+String[] repoStatus;
 // transform from csv to int for easy handle
 int[] pings;
 int piNumber = 4;
 int offset = 50;
 color[] status = new color[4];
 void setup(){
+  // file for ping check
   raspberryIp = loadStrings("ip.txt");
   raspberryPing = loadStrings("pingCheck.csv");
+  pings = int(split(raspberryPing[0], ','));
   // setup main screen
   size(600, 600);
   // setup font
   textFont(createFont("Fira Code", 12));
-  // setup for ping check
-  pings = int(split(raspberryPing[0], ','));
   createButtons();
 }
 void draw(){
