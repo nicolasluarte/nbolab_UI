@@ -20,14 +20,6 @@ void createButtons(){
      .setSize(w,h)
      .setBroadcast(true);
      ;
-     
-   cp5.addButton("LoadRepos")
-     .setBroadcast(false)
-     .setValue(0)
-     .setPosition(300,offset * 3 + h)
-     .setSize(w,h)
-     .setBroadcast(true);
-     ;
 }
 
 public void controlEvent(ControlEvent theEvent) {
@@ -43,11 +35,5 @@ public void Ping() {
 public void SetNFS() {
   String setNFS = dataPath("") + "/linux_scripts/setNFS.sh";
   exec(setNFS);
-  delay(5000);
-}
-
-public void LoadRepos() {
-  String loadRepos = dataPath("") + "/linux_scripts/loadRepos.sh";
-  exec(loadRepos);
   delay(5000);
 }
