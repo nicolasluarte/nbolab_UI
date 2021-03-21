@@ -10,6 +10,8 @@ int[] pings;
 int piNumber = 4;
 int offset = 50;
 color[] status = new color[4];
+
+
 void setup(){
   // file for ping check
   raspberryIp = loadStrings("ip.txt");

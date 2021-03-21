@@ -20,6 +20,30 @@ void createButtons(){
      .setSize(w,h)
      .setBroadcast(true);
      ;
+     
+  cp5.addButton("SetPackages")
+     .setBroadcast(false)
+     .setValue(0)
+     .setPosition(300,offset * 3 + h)
+     .setSize(w,h)
+     .setBroadcast(true);
+     ;
+     
+  cp5.addButton("getCamVid")
+     .setBroadcast(false)
+     .setValue(0)
+     .setPosition(300,offset * 4 + h)
+     .setSize(w,h)
+     .setBroadcast(true);
+     ;
+
+  cp5.addButton("piPreview")
+     .setBroadcast(false)
+     .setValue(0)
+     .setPosition(300,offset * 5 + h)
+     .setSize(w,h)
+     .setBroadcast(true);
+     ;
 }
 
 public void controlEvent(ControlEvent theEvent) {
@@ -35,4 +59,19 @@ public void Ping() {
 public void SetNFS() {
   String setNFS = dataPath("") + "/linux_scripts/setNFS.sh";
   exec(setNFS);
+}
+
+public void SetPackages() {
+  String setPackages = dataPath("") + "/linux_scripts/setPackages.sh";
+  exec(setPackages);
+}
+
+public void getCamVid() {
+  String getCamVid = dataPath("") + "/linux_scripts/getCamVid.sh";
+    exec(getCamVid);
+}
+
+public void piPreview() {
+  String playCamVid = dataPath("") + "/linux_scripts/playCamVid.sh";
+  exec(playCamVid);
 }
