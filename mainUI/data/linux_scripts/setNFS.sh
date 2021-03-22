@@ -27,7 +27,7 @@ parallel --tag --nonall --slf $IPS mkdir -p /home/pi/nbolab_EXPERIMENTS
 parallel --tag --nonall --slf $IPS sudo mount 192.168.50.10:/home/nicoluarte/nbolab_EXPERIMENTS 	/home/pi/nbolab_EXPERIMENTS
 
 # setup folders
-mkdir -p $HOME/nbolab_EXPERIMENTS/pi0/{preview_cam,cam_test,data_cam,data_lickometer}
-mkdir -p $HOME/nbolab_EXPERIMENTS/pi1/{preview_cam,cam_test,data_cam,data_lickometer}
-mkdir -p $HOME/nbolab_EXPERIMENTS/pi2/{preview_cam,cam_test,data_cam,data_lickometer}
-mkdir -p $HOME/nbolab_EXPERIMENTS/pi3/{preview_cam,cam_test,data_cam,data_lickometer}
+mkdir -p $HOME/nbolab_EXPERIMENTS/pi0/{preview_cam,cam_test,data_cam,data_lickometer,background}
+mkdir -p $HOME/nbolab_EXPERIMENTS/pi1/{preview_cam,cam_test,data_cam,data_lickometer,background}
+mkdir -p $HOME/nbolab_EXPERIMENTS/pi2/{preview_cam,cam_test,data_cam,data_lickometer,background}
+mkdir -p $HOME/nbolab_EXPERIMENTS/pi3/{preview_cam,cam_test,data_cam,data_lickometer,background}
