@@ -114,6 +114,32 @@ class manyButtons{
   }
 }
 
+  void pingArduino(Serial[] port){
+    if (_buttonPressed != 99 && port[_buttonPressed] != null){
+      port[_buttonPressed].clear();
+      port[_buttonPressed].write("<05000000001>"); // tells arduino to blink led
+      delay(1000);
+      port[_buttonPressed].write("<05000000000>"); // stops blink
+    }
+  }
+
+  boolean setPorts(int buttonPressed) {
+    if (buttonPressed == _buttonPressed){
+      return true;
+    }
+    return false;
+  }
+  
+    boolean setPorts() {
+    if (_buttonPressed != 99){
+      return true;
+    }
+    return false;
+  }
+  
+
+
+
   boolean createPorts(int buttonPressed){
     if (buttonPressed == _buttonPressed){
       return true;
@@ -121,7 +147,28 @@ class manyButtons{
     return false;
   }
   
-  void update(){
+  void update(int[] arr){
+    if (mousePressed){
+      for (int x = 0; x < (_cols * _rows); x++){
+        if (buttons[x].MouseIsOver()){
+          buttons[x].Draw(123);
+          _buttonPressed = x;
+          _buttonArray[x] = 1;
+          if (arr[x] == 1){
+            arr[x] = 0;
+            delay(100);
+          }
+          else {
+            arr[x] = 1;
+            delay(100);
+          }
+          }
+        }
+      }
+      updateColor(arr);
+  }
+  
+    void update(){
     if (mousePressed){
       for (int x = 0; x < (_cols * _rows); x++){
         if (buttons[x].MouseIsOver()){
@@ -129,6 +176,17 @@ class manyButtons{
           _buttonPressed = x;
           _buttonArray[x] = 1;
         }
+      }
+    }
+  }
+  
+  void updateColor(int[] arr){
+    for (int x = 0; x < (_cols * _rows); x++){
+      if (arr[x] == 1){
+        buttons[x].Draw(#08a830);
+      }
+      else {
+        buttons[x].Draw(#a81808);
       }
     }
   }

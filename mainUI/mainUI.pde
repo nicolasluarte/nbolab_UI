@@ -21,8 +21,13 @@ manyButtons piButtons;
 manyButtons piStatus;
 manyButtons arduinoButtons;
 manyButtons arduinoPortsButtons;
+manyButtons arduinoSelectPorts;
+manyButtons sendArduinoConfig;
 ArrayList<String> arduinoPorts;
+ArrayList<String> selectLabels;
 boolean createdPorts = false;
+int[] portArray = new int[64];
+Serial[] portsArr = new Serial[64];
 
 void settings(){
     size(UIW, UIH);
@@ -79,19 +84,37 @@ void piMenu(){
 
 void arduinoMenu(){
   clear();
-  String[] buttonLabels = {"Configuracion de puertos", "Configuracion Lickometro", "Recoleccion de datos"};
-  arduinoButtons = new manyButtons(UIW/2, UIH, 0, 0, 1, 3, buttonLabels);
   String[] ports = Serial.list();
   arduinoPorts = new ArrayList<String>();
+  selectLabels = new ArrayList<String>();
+  String[] sendArduinoConfigLabels = {"Crear conexion con puertos", "Enviar configuracion"};
+  // just for debug
+  // arduinoPorts.add("USB00");
   for (int i = 0; i < ports.length; i++){
     if (match(ports[i], "USB") != null){
       arduinoPorts.add(ports[i]);
+      //portsArr[i] = new Serial(this, ports[i], 9600);
+      selectLabels.add("X");
     }
   }
   int arduinoPortsSize = arduinoPorts.size();
-    arduinoPortsButtons = new manyButtons(UIW/2, UIH/arduinoPortsSize, UIW/2, 0, 1, arduinoPortsSize, arduinoPorts);
+    arduinoPortsButtons = new manyButtons(UIW/2, UIH/arduinoPortsSize-(UIH/2), 0, 0, 1, arduinoPortsSize, arduinoPorts);
+    arduinoSelectPorts = new manyButtons(UIW/2, UIH/arduinoPortsSize-(UIH/2), UIW/2, 0, 1, arduinoPortsSize, selectLabels);
+    sendArduinoConfig = new manyButtons(UIW/2, UIH/4, UIW/2, UIH/2, 1, 2, sendArduinoConfigLabels);
     arduinoPortsButtons.update();
-    arduinoButtons.update();
+    arduinoSelectPorts.update(portArray);
+    sendArduinoConfig.update();
+    if (sendArduinoConfig.setPorts(0) || arduinoPortsButtons.setPorts()){
+        for (int i = 0; i < arduinoPorts.size(); i++){
+          if (portArray[i] == 1){
+            portsArr[i] = new Serial(this, arduinoPorts.get(i), 9600);
+          }
+          else{
+            portsArr[i] = null;
+          }
+        }
+      }
+    arduinoPortsButtons.pingArduino(portsArr);
 }
 
 
