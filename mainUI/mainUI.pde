@@ -23,11 +23,13 @@ manyButtons arduinoButtons;
 manyButtons arduinoPortsButtons;
 manyButtons arduinoSelectPorts;
 manyButtons sendArduinoConfig;
+manyButtons increment;
 ArrayList<String> arduinoPorts;
 ArrayList<String> selectLabels;
 boolean createdPorts = false;
 int[] portArray = new int[64];
 Serial[] portsArr = new Serial[64];
+int[] FR = new int[1];
 
 void settings(){
     size(UIW, UIH);
@@ -88,6 +90,7 @@ void arduinoMenu(){
   arduinoPorts = new ArrayList<String>();
   selectLabels = new ArrayList<String>();
   String[] sendArduinoConfigLabels = {"Crear conexion con puertos", "Enviar configuracion"};
+  String[] incrementLabels = {str(FR[0])};
   // just for debug
   // arduinoPorts.add("USB00");
   for (int i = 0; i < ports.length; i++){
@@ -98,12 +101,15 @@ void arduinoMenu(){
     }
   }
   int arduinoPortsSize = arduinoPorts.size();
+    increment = new manyButtons(UIW/2, UIH/4, 0, UIH/2, 1, 1, incrementLabels);
     arduinoPortsButtons = new manyButtons(UIW/2, UIH/arduinoPortsSize-(UIH/2), 0, 0, 1, arduinoPortsSize, arduinoPorts);
     arduinoSelectPorts = new manyButtons(UIW/2, UIH/arduinoPortsSize-(UIH/2), UIW/2, 0, 1, arduinoPortsSize, selectLabels);
     sendArduinoConfig = new manyButtons(UIW/2, UIH/4, UIW/2, UIH/2, 1, 2, sendArduinoConfigLabels);
     arduinoPortsButtons.update();
     arduinoSelectPorts.update(portArray);
     sendArduinoConfig.update();
+    increment.update();
+    increment.incrementNumber(0, FR);
     if (sendArduinoConfig.setPorts(0) || arduinoPortsButtons.setPorts()){
         for (int i = 0; i < arduinoPorts.size(); i++){
           if (portArray[i] == 1){

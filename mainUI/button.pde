@@ -33,6 +33,20 @@ class Button {
     text(label, x + (w / 2), y + (h / 2));
   }
   
+   void reLabel(int lab) {
+    fill(218);
+    stroke(141);
+    rect(x, y, w, h, 10);
+    textAlign(CENTER, CENTER);
+    fill(0);
+    this.label = str(lab);
+    text(label, x + (w / 2), y + (h / 2));
+  }
+  
+  int getLabel(){
+    return Integer.valueOf(label);
+  }
+  
   
   boolean MouseIsOver() {
     if (mouseX > x && mouseX < (x + w) && mouseY > y && mouseY < (y + h)) {

@@ -122,6 +122,18 @@ class manyButtons{
       port[_buttonPressed].write("<05000000000>"); // stops blink
     }
   }
+  
+  void incrementNumber(int buttonPressed, int[] FR){
+    if (buttonPressed == _buttonPressed){
+      if(mouseButton == LEFT){
+        FR[0] = FR[0] + 1;
+      }
+      else if (mouseButton == RIGHT){
+        FR[0] = FR[0] - 1;
+      }
+      delay(100);
+    }
+  }
 
   boolean setPorts(int buttonPressed) {
     if (buttonPressed == _buttonPressed){
