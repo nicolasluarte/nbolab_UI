@@ -29,7 +29,8 @@ ArrayList<String> selectLabels;
 boolean createdPorts = false;
 int[] portArray = new int[64];
 Serial[] portsArr = new Serial[64];
-int[] FR = new int[1];
+int[] config = new int[16];
+String[] ratioTypes = {"Fixed Ratio", "Random Ratio", "Progressive Ratio"};
 
 void settings(){
     size(UIW, UIH);
@@ -90,26 +91,46 @@ void arduinoMenu(){
   arduinoPorts = new ArrayList<String>();
   selectLabels = new ArrayList<String>();
   String[] sendArduinoConfigLabels = {"Crear conexion con puertos", "Enviar configuracion"};
-  String[] incrementLabels = {str(FR[0])};
+
   // just for debug
   // arduinoPorts.add("USB00");
   for (int i = 0; i < ports.length; i++){
     if (match(ports[i], "USB") != null){
       arduinoPorts.add(ports[i]);
-      //portsArr[i] = new Serial(this, ports[i], 9600);
-      selectLabels.add("X");
+      selectLabels.add("^(~ O ~)^");
     }
   }
-  int arduinoPortsSize = arduinoPorts.size();
-    increment = new manyButtons(UIW/2, UIH/4, 0, UIH/2, 1, 1, incrementLabels);
+    String[] incrementLabels = {"Experimento", str(boolean(config[0])),
+                              "FR", str(config[1]),
+                            "Activar Spout 0", str(boolean((config[2]))),
+                          "Activar Spout 1", str(boolean((config[3]))),
+                        "Activar Plate", str(boolean((config[4]))),
+                      "Tipo Ratio Spout 0", ratioTypes[abs(config[5]) % 3],
+                    "Tipo Ratio Spout 1", ratioTypes[abs(config[6]) % 3],
+                  "Tiempo en Plate", str(config[7] * 1000) + " ms.",
+                "Time out", str(config[8] * 1000) + " ms.",
+                "Puerto", arduinoPorts.get(config[9]),
+              "Probar Bombas", "{O}"};
+                
+    int arduinoPortsSize = arduinoPorts.size();
+    increment = new manyButtons(UIW/2, UIH/2, 0, UIH/2, 2, incrementLabels.length/2, incrementLabels);
     arduinoPortsButtons = new manyButtons(UIW/2, UIH/arduinoPortsSize-(UIH/2), 0, 0, 1, arduinoPortsSize, arduinoPorts);
     arduinoSelectPorts = new manyButtons(UIW/2, UIH/arduinoPortsSize-(UIH/2), UIW/2, 0, 1, arduinoPortsSize, selectLabels);
     sendArduinoConfig = new manyButtons(UIW/2, UIH/4, UIW/2, UIH/2, 1, 2, sendArduinoConfigLabels);
-    arduinoPortsButtons.update();
     arduinoSelectPorts.update(portArray);
     sendArduinoConfig.update();
+    sendArduinoConfig.sendConfig(portsArr, 1, config[9], config);
     increment.update();
-    increment.incrementNumber(0, FR);
+    increment.incrementNumber(1, config, 0, true);
+    increment.incrementNumber(3, config, 1);
+    increment.incrementNumber(5, config, 2, true);
+    increment.incrementNumber(7, config, 3, true);
+    increment.incrementNumber(9, config, 4, true);
+    increment.incrementList(11, config, 5, ratioTypes.length); // *
+    increment.incrementList(13, config, 6, ratioTypes.length);
+    increment.incrementNumber(15, config, 7);
+    increment.incrementNumber(17, config, 8);
+    increment.incrementList(19, config, 9, arduinoPorts.size());
     if (sendArduinoConfig.setPorts(0) || arduinoPortsButtons.setPorts()){
         for (int i = 0; i < arduinoPorts.size(); i++){
           if (portArray[i] == 1){
@@ -120,7 +141,12 @@ void arduinoMenu(){
           }
         }
       }
+    arduinoPortsButtons.update();
     arduinoPortsButtons.pingArduino(portsArr);
+    increment.blinkSensor(portsArr, 4, config[9], 1);
+    increment.blinkSensor(portsArr, 6, config[9], 2);
+    increment.blinkSensor(portsArr, 8, config[9], 3);
+    increment.testMotors(portsArr, 20, config[9]);
 }
 
 

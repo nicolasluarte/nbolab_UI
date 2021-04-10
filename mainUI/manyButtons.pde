@@ -116,24 +116,104 @@ class manyButtons{
 
   void pingArduino(Serial[] port){
     if (_buttonPressed != 99 && port[_buttonPressed] != null){
+      buttons[_buttonPressed].Draw(123);
       port[_buttonPressed].clear();
-      port[_buttonPressed].write("<05000000001>"); // tells arduino to blink led
+      String msg = "<05000000001>";
+      port[_buttonPressed].write(msg); // tells arduino to blink led
+      delay(100);
+      port[_buttonPressed].write("<05000000000>"); // stops blink
+    }
+  }
+  
+    void pingArduino(Serial[] port, int buttonPressed){
+    if (buttonPressed == _buttonPressed && port[_buttonPressed] != null){
+      port[_buttonPressed].clear();
+      port[_buttonPressed].write("<05000000002>"); // tells arduino to blink led
       delay(1000);
       port[_buttonPressed].write("<05000000000>"); // stops blink
     }
   }
   
-  void incrementNumber(int buttonPressed, int[] FR){
+    void blinkSensor(Serial[] port, int buttonPressed, int portNumber, int sensor){
+    if (buttonPressed == _buttonPressed && port[portNumber] != null){
+      port[portNumber].clear();
+      String msg = "<05000000000" + sensor + ">";
+      print(msg);
+      port[portNumber].write(msg); // tells arduino to blink led
+      delay(1000);
+      port[portNumber].write("<050000000000>"); // stops blink
+    }
+    print(buttonPressed == _buttonPressed && port[_buttonPressed] != null, _buttonPressed);
+  }
+  
+    void testMotors(Serial[] port, int buttonPressed, int portNumber){
+    if (buttonPressed == _buttonPressed && port[portNumber] != null){
+      port[portNumber].clear();
+      String msg = "<0500000000001>";
+      print(msg);
+      port[portNumber].write(msg); // tells arduino to blink led
+      delay(1000);
+      port[portNumber].write("<1511111111000>");
+      //port[portNumber].write("<0500000000000>"); // stops motors
+    }
+  }
+  
+  void sendConfig(Serial[] port, int buttonPressed, int portNumber, int[] config){
+    if (buttonPressed == _buttonPressed && port[portNumber] != null){
+      port[portNumber].clear();
+      String msg = "<1511111111000>";
+       port[portNumber].write(msg);
+       delay(1000);
+    }
+  }
+  
+  void incrementNumber(int buttonPressed, int[] counter, int idx){
     if (buttonPressed == _buttonPressed){
       if(mouseButton == LEFT){
-        FR[0] = FR[0] + 1;
+          counter[idx] = counter[idx] + 1;
       }
       else if (mouseButton == RIGHT){
-        FR[0] = FR[0] - 1;
+          counter[idx]= counter[idx] - 1;
       }
       delay(100);
     }
   }
+  
+    void incrementList(int buttonPressed, int[] counter, int idx, int len){
+    if (buttonPressed == _buttonPressed){
+      if(mouseButton == LEFT){
+          counter[idx] = counter[idx] + 1;
+          counter[idx] = counter[idx] % len;
+      }
+      delay(100);
+    }
+  }
+  
+    void incrementNumber(int buttonPressed, int[] counter, int idx, boolean toggle){
+      if (toggle){
+        if (buttonPressed == _buttonPressed){
+          if(counter[idx] == 0){
+            counter[idx] = 1;
+          }
+          else if (counter[idx] == 1){
+            counter[idx] = 0;
+          }
+          delay(100);
+        }
+        else{
+              if (buttonPressed == _buttonPressed){
+                if(mouseButton == LEFT){
+                  counter[idx] = counter[idx] + 1;
+              }
+              else if (mouseButton == RIGHT){
+                  counter[idx]= counter[idx] - 1;
+              }
+              delay(100);
+    }
+        }
+      }
+  }
+
 
   boolean setPorts(int buttonPressed) {
     if (buttonPressed == _buttonPressed){
