@@ -83,7 +83,7 @@ void piMenu(){
   piButtons.SetNFS(1);
   piButtons.SetPackages(2);
   piButtons.getCamVid(3);
-  piButtons.piPreview(4);
+        piButtons.piPreview(4);
 }
 
 void arduinoMenu(){
