@@ -1,134 +1,179 @@
 import processing.serial.*;
 import controlP5.*;
 
-// string array that holds all the raspberry pi ip's
-String[] raspberryIp;
-// load text file
-String[] raspberryPing;
-String[] repoStatus;
-// transform from csv to int for easy handle
-int[] pings;
-int piNumber = 4;
-int offset = 50;
-color[] status = new color[4];
-// menu related variables
-int UIW = 700;
-int UIH = 700;
-int currentMenu = 1;
-boolean clicked = false;
-manyButtons menuButtons;
-manyButtons piButtons;
-manyButtons piStatus;
-manyButtons arduinoButtons;
-manyButtons arduinoPortsButtons;
-manyButtons arduinoSelectPorts;
-manyButtons sendArduinoConfig;
-manyButtons increment;
-ArrayList<String> arduinoPorts;
-ArrayList<String> selectLabels;
-boolean createdPorts = false;
-int[] portArray = new int[64];
-Serial[] portsArr = new Serial[64];
-int[] config = new int[16];
-String[] ratioTypes = {"Fixed Ratio", "Random Ratio", "Progressive Ratio"};
 
-void settings(){
+void settings() {
     size(UIW, UIH);
 }
 
-void setup(){
-  // file for ping check
-  raspberryIp = loadStrings("ip.txt");
-  raspberryPing = loadStrings("pingCheck.csv");
-  pings = int(split(raspberryPing[0], ','));
-  // setup main scree
-  // setup font
-  textFont(createFont("Fira Code", 12));
+/*
+ * raspberryIp: load the ip for every connected pi, this file needs to be edited
+ * manually
+ * raspberryPing: is a text file that is updated with a bash script, tries to ping
+ * every pi and writes if it made it or not
+ * pings: stores de ping file into memory
+ *
+ */
+void setup() {
+    raspberryIp = loadStrings("ip.txt");
+    raspberryPing = loadStrings("pingCheck.csv");
+    pings = int(split(raspberryPing[0], ','));
 }
-void draw(){
-  switch(currentMenu) {
-    case 1: mainMenu(); break;
-    case 2: piMenu(); break;
-    case 3: arduinoMenu(); break;
-  } 
 
+/*
+ * very simple way to move between menus with the keyboard
+ */
+void draw() {
+    switch(currentMenu) {
+    case 1:
+        mainMenu();
+        break;
+    case 2:
+        piMenu();
+        break;
+    case 3:
+        arduinoMenu();
+        break;
+    }
 }
+
+/*
+ * handles the menu swithching
+ */
 
 void keyReleased() {
-  // Check for menu
-  if(key == '0') { currentMenu = 0; }
-  if(key == '1') { currentMenu = 1; }
-  if(key == '2') { currentMenu = 2; }
-  if(key == '3') { currentMenu = 3; }
-  if(key == '4') { currentMenu = 4; }
-}
-
-void mainMenu(){
-  clear();
-  String[] buttonLabels = {"*Sistema de alimentacion operante*\n\n Presione los numeros para acceder a menus",
-                            "2. Raspberry Pi Menu", "3. Lickometer/Arduino Menu"};
-  menuButtons = new manyButtons(UIW, UIH, 0, 0, 1, buttonLabels.length, buttonLabels);
-}
-
-void piMenu(){
-  clear();
-  String[] buttonsLabels = {"Ping RaspberryPi", "Set NFS", "Set Packages", "Get Cam Video", "Preview Pi"};
-  String[] piLabels = {"Raspberry Pi 0", "Raspberry Pi 1", "Raspberry Pi 2", "Raspberry Pi 3"};
-  piButtons = new manyButtons(UIW/2, UIH, 0, 0, 1, 5, buttonsLabels); 
-  piStatus = new manyButtons(UIW/2, UIH, UIW/2, 0, 1, 4, piLabels);
-  piStatus.update();
-  piButtons.update();
-  piStatus.updatePing();
-  piButtons.Ping(0);
-  piButtons.SetNFS(1);
-  piButtons.SetPackages(2);
-  piButtons.getCamVid(3);
-        piButtons.piPreview(4);
-}
-
-void arduinoMenu(){
-  clear();
-  background(255);
-  String[] ports = Serial.list();
-  arduinoPorts = new ArrayList<String>();
-  selectLabels = new ArrayList<String>();
-  String[] sendArduinoConfigLabels = {"Crear conexion con puertos", "Enviar configuracion"};
-
-  // just for debug
-  // arduinoPorts.add("USB00");
-  for (int i = 0; i < ports.length; i++){
-    if (match(ports[i], "tty") != null){
-      arduinoPorts.add(ports[i]);
-      selectLabels.add("Click para seleccionar puerto");
+    // Check for menu
+    if (key == '0') {
+        currentMenu = 0;
     }
-  }
-
-  for (int i = 0; i < arduinoPorts.size(); i++){
-    if (portArray[i] == 1){
-    selectLabels.set(i,"Puerto seleccionado\n Hace clic en el puerto");
+    if (key == '1') {
+        currentMenu = 1;
     }
-  }
+    if (key == '2') {
+        currentMenu = 2;
+    }
+    if (key == '3') {
+        currentMenu = 3;
+    }
+    if (key == '4') {
+        currentMenu = 4;
+    }
+}
+
+void mainMenu() {
+    clear();
+    String[] buttonLabels = {"*Sistema de alimentacion operante*\n\n Presione los numeros para acceder a menus",
+                             "2. Raspberry Pi Menu",
+                             "3. Lickometer/Arduino Menu"
+                            };
+    menuButtons = new manyButtons(UIW, // button frame width
+                                  UIH, // button frame height
+                                  0, // offset x-axis
+                                  0, // offset y-axis
+                                  1, // frame column number
+                                  buttonLabels.length, // frame row number
+                                  buttonLabels);
+}
+
+void piMenu() {
+    clear();
+    String[] buttonsLabels = {"Ping RaspberryPi",
+                              "Set NFS",
+                              "Set Packages",
+                              "Get Cam Video",
+                              "Preview Pi"
+                             };
+    String[] piLabels = {"Raspberry Pi 0",
+                         "Raspberry Pi 1",
+                         "Raspberry Pi 2",
+                         "Raspberry Pi 3"
+                        };
+    piButtons = new manyButtons(UIW/2,
+                                UIH,
+                                0,
+                                0,
+                                1,
+                                5,
+                                buttonsLabels);
+    piStatus = new manyButtons(UIW/2,
+                               UIH,
+                               UIW/2,
+                               0,
+                               1,
+                               4,
+                               piLabels);
+    piStatus.update(); // .udpate() is a method to get the pressed number within a button frame
+    piButtons.update();
+    piStatus.updatePing();
+    piButtons.Ping(0); // the parameter specifies the button number that activates the function
+    piButtons.SetNFS(1);
+    piButtons.SetPackages(2);
+    piButtons.getCamVid(3);
+    piButtons.piPreview(4);
+}
+
+void arduinoMenu() {
+    clear();
+    background(255);
+    // port related declarations
+    selectLabels = new ArrayList<String>();
+    String[] ports = Serial.list();
+    arduinoPorts = new ArrayList<String>();
+    // this for loop matches for "USB" in serial port list
+    // in linux serial ports are USB followed by a number
+    // is it finds a USB serial port adds it to arduiPorts array list
+    // also creates a label for each valid port
+    for (int i = 0; i < ports.length; i++) {
+        if (match(ports[i], "USB") != null) {
+            arduinoPorts.add(ports[i]);
+            selectLabels.add("Click para seleccionar puerto");
+        }
+    }
+
+    // labels for buttons
+    String[] sendArduinoConfigLabels = {"Crear conexion con puertos",
+                                        "Enviar configuracion"
+                                       };
     String[] incrementLabels = {"Experimento", str(boolean(config[0])),
-                              "FR", str(config[1]),
-                            "Activar Spout 0", str(boolean((config[2]))),
-                          "Activar Spout 1", str(boolean((config[3]))),
-                        "Activar Plate", str(boolean((config[4]))),
-                      "Tipo Ratio Spout 0", ratioTypes[abs(config[5]) % 3],
-                    "Tipo Ratio Spout 1", ratioTypes[abs(config[6]) % 3],
-                  "Tiempo en Plate", str(config[7] * 1000) + " ms.",
-                "Time out", str(config[8] * 1000) + " ms.",
-                "Puerto", arduinoPorts.get(config[9]),
-              "Probar Bombas", "{O}"};
-                
+                                "FR", str(config[1]),
+                                "Activar Spout 0", str(boolean((config[2]))),
+                                "Activar Spout 1", str(boolean((config[3]))),
+                                "Activar Plate", str(boolean((config[4]))),
+                                "Tipo Ratio Spout 0", ratioTypes[abs(config[5]) % 3],
+                                "Tipo Ratio Spout 1", ratioTypes[abs(config[6]) % 3],
+                                "Tiempo en Plate", str(config[7] * 1000) + " ms.",
+                                "Time out", str(config[8] * 1000) + " ms.",
+                                "Puerto", arduinoPorts.get(config[9]),
+                                "Probar Bombas", "{O}"
+                               };
+
+    // when a port is selected by the user the label changes
+    // just to make it more user friendly
+    for (int i = 0; i < arduinoPorts.size(); i++) {
+        if (portArray[i] == 1) {
+            selectLabels.set(i, "Puerto seleccionado\n Hace clic en el puerto");
+        }
+    }
+
+    // buttons instantiations
     int arduinoPortsSize = arduinoPorts.size();
+    // buttons for setting experimental variables
     increment = new manyButtons(UIW/2, UIH/2, 0, UIH/2, 2, incrementLabels.length/2, incrementLabels);
+    // buttons to ping the ports/arduinos
     arduinoPortsButtons = new manyButtons(UIW/2, UIH/2, 0, 0, 1, arduinoPortsSize, arduinoPorts);
+    // buttons to select the ports
     arduinoSelectPorts = new manyButtons(UIW/2, UIH/2, UIW/2, 0, 1, arduinoPortsSize, selectLabels);
+    // button to send the configuration to the arduino
     sendArduinoConfig = new manyButtons(UIW/2, UIH/4, UIW/2, UIH/2, 1, 2, sendArduinoConfigLabels);
-    arduinoSelectPorts.update(portArray);
-    sendArduinoConfig.update();
-    sendArduinoConfig.sendConfig(portsArr, 1, config[9], config);
+
+    // buttons updates
     increment.update();
+    sendArduinoConfig.update();
+    arduinoPortsButtons.update();
+    arduinoSelectPorts.update(portArray);
+
+    // button class methods
+    sendArduinoConfig.sendConfig(portsArr, 1, config[9], config);
     increment.incrementNumber(1, config, 0, true);
     increment.incrementNumber(3, config, 1);
     increment.incrementNumber(5, config, 2, true);
@@ -139,17 +184,17 @@ void arduinoMenu(){
     increment.incrementNumber(15, config, 7);
     increment.incrementNumber(17, config, 8);
     increment.incrementList(19, config, 9, arduinoPorts.size());
-    if (sendArduinoConfig.setPorts(0) || arduinoPortsButtons.setPorts()){
-        for (int i = 0; i < arduinoPorts.size(); i++){
-          if (portArray[i] == 1){
-            portsArr[i] = new Serial(this, arduinoPorts.get(i), 9600);
-          }
-          else{
-            portsArr[i] = null;
-          }
+    // here are the methods that require a port connection, mostly blinking LEDS
+    // this loop updated the established connections
+    if (sendArduinoConfig.setPorts(0) || arduinoPortsButtons.setPorts()) {
+        for (int i = 0; i < arduinoPorts.size(); i++) {
+            if (portArray[i] == 1) {
+                portsArr[i] = new Serial(this, arduinoPorts.get(i), 9600);
+            } else {
+                portsArr[i] = null;
+            }
         }
-      }
-    arduinoPortsButtons.update();
+    }
     arduinoPortsButtons.pingArduino(portsArr);
     increment.blinkSensor(portsArr, 4, config[9], 1);
     increment.blinkSensor(portsArr, 6, config[9], 2);
@@ -157,7 +202,7 @@ void arduinoMenu(){
     increment.testMotors(portsArr, 20, config[9]);
 }
 
-
-  void mouseClicked(){
+// to handle click event not used ATM
+void mouseClicked() {
     clicked = true;
-  }
+}
