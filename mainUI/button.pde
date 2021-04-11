@@ -16,9 +16,9 @@ class Button {
   }
   
   void Draw() {
-    fill(218);
+    fill(255);
     stroke(141);
-    rect(x, y, w, h, 10);
+    rect(x, y, w, h);
     textAlign(CENTER, CENTER);
     fill(0);
     text(label, x + (w / 2), y + (h / 2));
@@ -27,7 +27,7 @@ class Button {
    void Draw(int COLOR) {
     fill(COLOR);
     stroke(141);
-    rect(x, y, w, h, 10);
+    rect(x, y, w, h);
     textAlign(CENTER, CENTER);
     fill(0);
     text(label, x + (w / 2), y + (h / 2));

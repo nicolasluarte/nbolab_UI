@@ -12,8 +12,8 @@ int piNumber = 4;
 int offset = 50;
 color[] status = new color[4];
 // menu related variables
-int UIW = 600;
-int UIH = 600;
+int UIW = 700;
+int UIH = 700;
 int currentMenu = 1;
 boolean clicked = false;
 manyButtons menuButtons;
@@ -65,8 +65,9 @@ void keyReleased() {
 
 void mainMenu(){
   clear();
-  String[] buttonLabels = {"2. Raspberry Pi Menu", "3. Lickometer/Arduino Menu"};
-  menuButtons = new manyButtons(UIW, UIH, 0, 0, 1, 2, buttonLabels);
+  String[] buttonLabels = {"*Sistema de alimentacion operante*\n\n Presione los numeros para acceder a menus",
+                            "2. Raspberry Pi Menu", "3. Lickometer/Arduino Menu"};
+  menuButtons = new manyButtons(UIW, UIH, 0, 0, 1, buttonLabels.length, buttonLabels);
 }
 
 void piMenu(){
@@ -87,6 +88,7 @@ void piMenu(){
 
 void arduinoMenu(){
   clear();
+  background(255);
   String[] ports = Serial.list();
   arduinoPorts = new ArrayList<String>();
   selectLabels = new ArrayList<String>();
@@ -95,9 +97,15 @@ void arduinoMenu(){
   // just for debug
   // arduinoPorts.add("USB00");
   for (int i = 0; i < ports.length; i++){
-    if (match(ports[i], "USB") != null){
+    if (match(ports[i], "tty") != null){
       arduinoPorts.add(ports[i]);
-      selectLabels.add("^(~ O ~)^");
+      selectLabels.add("Click para seleccionar puerto");
+    }
+  }
+
+  for (int i = 0; i < arduinoPorts.size(); i++){
+    if (portArray[i] == 1){
+    selectLabels.set(i,"Puerto seleccionado\n Hace clic en el puerto");
     }
   }
     String[] incrementLabels = {"Experimento", str(boolean(config[0])),
@@ -114,8 +122,8 @@ void arduinoMenu(){
                 
     int arduinoPortsSize = arduinoPorts.size();
     increment = new manyButtons(UIW/2, UIH/2, 0, UIH/2, 2, incrementLabels.length/2, incrementLabels);
-    arduinoPortsButtons = new manyButtons(UIW/2, UIH/arduinoPortsSize-(UIH/2), 0, 0, 1, arduinoPortsSize, arduinoPorts);
-    arduinoSelectPorts = new manyButtons(UIW/2, UIH/arduinoPortsSize-(UIH/2), UIW/2, 0, 1, arduinoPortsSize, selectLabels);
+    arduinoPortsButtons = new manyButtons(UIW/2, UIH/2, 0, 0, 1, arduinoPortsSize, arduinoPorts);
+    arduinoSelectPorts = new manyButtons(UIW/2, UIH/2, UIW/2, 0, 1, arduinoPortsSize, selectLabels);
     sendArduinoConfig = new manyButtons(UIW/2, UIH/4, UIW/2, UIH/2, 1, 2, sendArduinoConfigLabels);
     arduinoSelectPorts.update(portArray);
     sendArduinoConfig.update();
