@@ -1,12 +1,13 @@
 // global variables
-int UIW = 700;
-int UIH = 700;
+int UIW = 1200;
+int UIH = 800;
 int currentMenu = 1;
 boolean clicked = false;
 
 // Arduino variables
 ArrayList<String> arduinoPorts;
 ArrayList<String> selectLabels;
+ArrayList<String> readArduinoLabels;
 boolean createdPorts = false;
 int[] portArray = new int[64];
 Serial[] portsArr = new Serial[64];
@@ -31,3 +32,16 @@ manyButtons arduinoPortsButtons;
 manyButtons arduinoSelectPorts;
 manyButtons sendArduinoConfig;
 manyButtons increment;
+manyButtons readArduino;
+
+
+
+boolean port0;
+boolean port1;
+boolean port2;
+boolean port3;
+boolean tt = true;
+boolean nn = false;
+String r;
+int[] R = new int[20];
+Table table;

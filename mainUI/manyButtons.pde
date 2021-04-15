@@ -168,10 +168,15 @@ class manyButtons {
 
     void sendConfig(Serial[] port, int buttonPressed, int portNumber, int[] config) {
         if (buttonPressed == _buttonPressed && port[portNumber] != null) {
+            config[9] = 1; // signals a new configuration
             port[portNumber].clear();
-            String msg = "<1511111111000>";
+            String[] CONFIG = str(config);
+            CONFIG[0] = str(1);
+            CONFIG[1] = str(char(config[1]));
+            String msg = "<" + join(CONFIG, "") + ">";
             port[portNumber].write(msg);
             delay(1000);
+            port[portNumber].clear();
         }
     }
 
@@ -275,6 +280,7 @@ class manyButtons {
                     buttons[x].Draw(123);
                     _buttonPressed = x;
                     _buttonArray[x] = 1;
+                    delay(100);
                 }
             }
         }
@@ -290,6 +296,7 @@ class manyButtons {
             }
         }
     }
+    
 
 
 
