@@ -130,7 +130,7 @@ class manyButtons {
         if (_buttonPressed != 99 && port[_buttonPressed] != null) {
             buttons[_buttonPressed].Draw(123);
             port[_buttonPressed].clear();
-            String msg = "<05000000001>";
+            String msg = "<15000000001>";
             port[_buttonPressed].write(msg); // tells arduino to blink led
             delay(100);
             port[_buttonPressed].write("<05000000000>"); // stops blink
@@ -140,29 +140,29 @@ class manyButtons {
     void pingArduino(Serial[] port, int buttonPressed) {
         if (buttonPressed == _buttonPressed && port[_buttonPressed] != null) {
             port[_buttonPressed].clear();
-            port[_buttonPressed].write("<05000000002>"); // tells arduino to blink led
+            port[_buttonPressed].write("<15000000002>"); // tells arduino to blink led
             delay(1000);
-            port[_buttonPressed].write("<05000000000>"); // stops blink
+            port[_buttonPressed].write("<15000000000>"); // stops blink
         }
     }
 
     void blinkSensor(Serial[] port, int buttonPressed, int portNumber, int sensor) {
         if (buttonPressed == _buttonPressed && port[portNumber] != null) {
             port[portNumber].clear();
-            String msg = "<05000000000" + sensor + ">";
+            String msg = "<15000000000" + sensor + ">";
             port[portNumber].write(msg); // tells arduino to blink led
             delay(1000);
-            port[portNumber].write("<050000000000>"); // stops blink
+            port[portNumber].write("<150000000000>"); // stops blink
         }
     }
 
     void testMotors(Serial[] port, int buttonPressed, int portNumber) {
         if (buttonPressed == _buttonPressed && port[portNumber] != null) {
             port[portNumber].clear();
-            String msg = "<0500000000001>";
+            String msg = "<1500000000001>";
             port[portNumber].write(msg); // tells arduino to blink led
             delay(1000);
-            port[portNumber].write("<1511111111000>");
+            port[portNumber].write("<1500000000000>");
         }
     }
 

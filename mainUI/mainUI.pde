@@ -39,6 +39,8 @@ void setup() {
     table.addColumn("timeOut");
     table.addColumn("experimentFlag");
     table.addColumn("millis");
+    table.addColumn("port");
+    table.addColumn("animal");
 }
 
 /*
@@ -134,7 +136,6 @@ void piMenu() {
 }
 
 void arduinoMenu() {
-    int start = millis();
     clear();
     background(255);
     // port related declarations
@@ -150,7 +151,7 @@ void arduinoMenu() {
             arduinoPorts.add(ports[i]);
             selectLabels.add("Click para seleccionar puerto");
         }
-
+        tmpPort = true;
     }
 
     // labels for buttons
@@ -178,7 +179,9 @@ void arduinoMenu() {
                                 "Tiempo en Plate", str(config[7] * 1000) + " ms.",
                                 "Time out", str(config[8] * 1000) + " ms.",
                                 "Puerto", arduinoPorts.get(config[13]),
-                                "Probar Bombas", "{O}"
+                                "Probar Bombas", "{O}",
+                                "Codigo Animal", str(animalCode[0]),
+                                "Escribir en csv", str(boolean(writeCsv[0]))
                                };
                              
 
@@ -223,6 +226,8 @@ void arduinoMenu() {
     increment.incrementNumber(15, config, 7);
     increment.incrementNumber(17, config, 8);
     increment.incrementList(19, config, 13, arduinoPorts.size());
+    increment.incrementNumber(23, animalCode, 0);
+    increment.incrementNumber(25, writeCsv, 0, true);
     // here are the methods that require a port connection, mostly blinking LEDS
     // this loop updated the established connections
     if (sendArduinoConfig.setPorts(0)) {
@@ -247,27 +252,36 @@ void arduinoMenu() {
     sendArduinoConfig.sendConfig(portsArr, 1, config[13], config);
     
 
-      //println(millis() - start);
+      increment.buttons[24].Draw(#fc03be);
+      if (writeCsv[0] == 1){
       saveTable(table, "data/test.csv");
-      
-      if(port1){
-        readArduino.buttons[0].Draw(#80eb34);
       }
+      
+      //printArray(portIndex);
+      if (portIndex[1] == 1){
+        idx[0] = arduinoPorts.get(1);
+        readArduino.buttons[4].Draw(#1805ed);
+        if (R[0] == 1){ readArduino.buttons[5].Draw(#80eb34); }
+        if (R[1] == 1){ readArduino.buttons[6].Draw(#80eb34); }
+        if (R[2] == 1){ readArduino.buttons[7].Draw(#80eb34); }
+      }
+      
       
 
 }
 
 void serialEvent(Serial p){
-  port0 = p.equals(portsArr[0]);
-  port1 = p.equals(portsArr[1]);
-  port2 = p.equals(portsArr[2]);
-  port3 = p.equals(portsArr[3]);
+  if (p.equals(portsArr[0])){ portIndex[0] = 1; }
+  if (p.equals(portsArr[1])){ portIndex[1] = 1; }
+  if (p.equals(portsArr[2])){ portIndex[2] = 1; }
+  if (p.equals(portsArr[3])){ portIndex[3] = 1; }
+
   if (p.available() > 0){
   r = p.readStringUntil('\n');
   if (r != null){
     //println(r);
     int sensorVals[] = int(split(r, ','));
-    if(sensorVals.length > 19){
+    if(sensorVals.length > 20){
     R = sensorVals;
     TableRow newRow = table.addRow();
     newRow.setInt("sensor0", sensorVals[0]);
@@ -284,27 +298,21 @@ void serialEvent(Serial p){
     newRow.setInt("spout0Active", sensorVals[11]);
     newRow.setInt("spout1Active", sensorVals[12]);
     newRow.setInt("plateActive", sensorVals[13]);
-    newRow.setInt("plateTime", sensorVals[14]);
-    newRow.setInt("scheduleSpout0", sensorVals[15]);
-    newRow.setInt("scheduleSpout1", sensorVals[16]);
+    newRow.setInt("scheduleSpout0", sensorVals[14]);
+    newRow.setInt("scheduleSpout1", sensorVals[15]);
+    newRow.setInt("plateTime", sensorVals[16]);
     newRow.setInt("timeOut", sensorVals[17]);
     newRow.setInt("experimentFlag", sensorVals[18]);
     newRow.setInt("millis", sensorVals[19]);
+    newRow.setString("port", idx[0]);
+    newRow.setInt("animal", animalCode[0]);
     }
 
   }
   }
 
 }
-//void serialEvent(Serial p)
-//{
-//     String r = p.readStringUntil('\n');
-//     if (r != null){
-//    String[] rr = splitTokens(r, ",");
-//    //r = trim(r);
-//    inString = int(rr[0]);
-//     }
-//}
+
 
 
 // to handle click event not used ATM

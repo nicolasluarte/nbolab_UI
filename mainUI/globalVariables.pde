@@ -35,11 +35,11 @@ manyButtons increment;
 manyButtons readArduino;
 
 
-
-boolean port0;
-boolean port1;
-boolean port2;
-boolean port3;
+int[] writeCsv = new int [1];
+int[] animalCode = new int[1];
+String[] idx = new String[1];
+boolean tmpPort = false;
+int[] portIndex = new int[4];
 boolean tt = true;
 boolean nn = false;
 String r;
